@@ -31,6 +31,7 @@ namespace Fizz
                 return;
             }
             {
+             Chat.Print("Fizz By modziux successfully loaded");
              Fmeniu.Loadmenu();
              FSpells.FSpellsloud();
              modesmanager.ModeManager();
@@ -38,6 +39,7 @@ namespace Fizz
              Obj_AI_Base.OnBuffLose += Obj_AI_BaseOnBufflose;
              Obj_AI_Base.OnBasicAttack += OnBasicAttack;
              Drawing.OnDraw += OnDraw;
+             
             }
           
         }

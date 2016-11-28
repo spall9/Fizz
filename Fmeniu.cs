@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EloBuddy;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 namespace Fizz
 {
-    using SharpDX;
-
     class Fmeniu
     {
         public static Menu Menu, MenuCombo, MenuHarass, MenuLane, MenuJungle, MenuMisc, MenuDraw;
         static Color[] colorlist = { Color.Green, Color.Aqua, Color.Black, Color.Blue, Color.Firebrick, Color.Gold, Color.Pink, Color.Violet, Color.White, Color.Lime, Color.LimeGreen, Color.Yellow, Color.Magenta };
         static Slider masterColorSlider = new Slider("Color Slider", 0, 0, colorlist.Length - 1);
+        public static Slider SkinSlider = new Slider("SkinID : ({0})", 0, 0, 9);
+        public static CheckBox SkinEnable = new CheckBox("Enable");
         public static void Loadmenu()
         {
+            SkinSlider.OnValueChange += SkinSlider_OnValueChange;
+            SkinEnable.OnValueChange += SkinEnable_OnValueChange;
             Menu = MainMenu.AddMenu("Fizz", "by modestas");
             MenuCombo = Menu.AddSubMenu("Combo", "combomenu");
             MenuCombo.Add("Combo.Q.Use", new CheckBox("Use Q"));
@@ -47,6 +50,8 @@ namespace Fizz
             MenuJungle.Add("Jungle.E.Use", new CheckBox("Use E"));
             MenuJungle.Add("Jungle.E.Mana", new Slider("Min Mana Use E", 60, 0, 100));
             MenuMisc = Menu.AddSubMenu("Misc", "Misc_menu");
+            MenuMisc.Add("use_skin", SkinEnable);
+            MenuMisc.Add("Skin_id", SkinSlider);
           //  MenuMisc.Add("Use.Ignite", new CheckBox("Use Ignite"));
             MenuMisc.Add("UseAutoEOnTurrets", new CheckBox("Use Auto E On Turrets"));
             MenuDraw = Menu.AddSubMenu("Draw", "Draw_menu");
@@ -56,9 +61,8 @@ namespace Fizz
             MenuDraw.Add("draww", new CheckBox("Draw W", false));
             MenuDraw.Add("drawe", new CheckBox("Draw E", false));
             MenuDraw.Add("drawr", new CheckBox("Draw R", false));
-            
 
-        }
+    }
 
         public static bool combo_q
         {
@@ -181,7 +185,6 @@ namespace Fizz
         {
             get { return MenuDraw["Indicator"].Cast<CheckBox>().CurrentValue; }
         }
-
         public static bool DrawQ
         {
             get { return MenuDraw["drawq"].Cast<CheckBox>().CurrentValue; }
@@ -211,7 +214,35 @@ namespace Fizz
         {
             get { return MenuMisc["UseAutoEOnTurrets"].Cast<CheckBox>().CurrentValue; }
         }
+        public static bool Use_skin
+        {
+            get { return MenuMisc["use_skin"].Cast<CheckBox>().CurrentValue; }
+        }
+        public static int skin_id
+        {
+            get { return MenuMisc["Skin_id"].Cast<Slider>().CurrentValue; }
+        }
+        private static void SkinEnable_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+        {
+            if (!Use_skin)
+            {
+                Player.SetSkinId(0);
+                return;
+            }
 
+            Player.SetSkinId(skin_id);
+        }
+
+        private static void SkinSlider_OnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs args)
+        {
+            if (!Use_skin)
+            {
+                Player.SetSkinId(0);
+                return;
+            }
+
+            Player.SetSkinId(skin_id);
+        }
     }
 
 }
